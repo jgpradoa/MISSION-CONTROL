@@ -31,26 +31,14 @@ apiRouter.use(function (req, res, next) {
 //Method:POST
 //	adding Student
 apiRouter.post('/auth/', cors(corsOptions), function(req, res){
-    console.log("inside auth " + JSON.stringify(req.headers)); 
 	var info = req.body;
-    /*console.log("auth "+ JSON.stringify(info)); 
-    var key = "usr";
+    console.log("auth "+ JSON.stringify(info)); 
+    /*var key = "usr";
     var value = {brother: "Jose Prado", location: {latitude:28.066464399999997,longitude:-82.40067619999999}};
     res.cookie(key, value, { maxAge: 900000, httpOnly: true, secure: true}); */
-	//res.send({data: true, brother: {name: "Jose Prado", location: {latitude:28.066464399999997,longitude:-82.40067619999999}}});
-    res.status(500).send({ error: 'worng username/password' });
-});
-
-apiRouter.get('/getAll', cors(corsOptions), function(req, res){
-    console.log("hi inside get ALL :)"); 
-    var brothers = [];
-    brothers.push({id: 1,  fName: "Jose",  lName: "Prado"});
-    brothers.push({id: 1,  fName: "Memo",  lName: "Prado"});
-    brothers.push({id: 1,  fName: "Guillermo",  lName: "Prado"});
-
-    //returning brothers
-    res.send(JSON.stringify({data: brothers}));  
-    
+	res.send({data: true, brother: {name: "Jose Prado", location: {latitude:28.066464399999997,longitude:-82.40067619999999}}});
+    //error res
+    //res.status(500).send({ error: 'wrong username/password' });
 });
 
 
