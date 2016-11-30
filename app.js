@@ -8,6 +8,13 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');
 //config file
 var config = require('./config/main');
+//express JWT
+var xJwt = require('express-jwt');
+//JWT
+var jwt = require('jsonwebtoken');
+//userAPI
+var userAPI = require('./routes/user'); 
+
 
 //adding logger to express
 app.use(morgan('combined'));
@@ -17,6 +24,35 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 //to be able to get object in req.body
 app.use(bodyParser.json()); 
+
+//to be able to exctract the JWT
+app.use(xJwt({
+  secret: config.secret,
+  credentialsRequired: false,
+  getToken: function fromHeaderOrQuerystring (req) {
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+        return req.headers.authorization.split(' ')[1];
+    } else if (req.query && req.query.token) {
+      return req.query.token;
+    }
+    return null;
+  }
+}));
+
+//to be able to handle JWT's errors
+app.use(function (err, req, res, next) {
+  console.log(req.headers.authorization);
+  if (err.name === 'UnauthorizedError') {
+    res.status(401).send('invalid token...');
+  }
+});
+
+//adding JWT to all routes except login
+app.use(xJwt({ 
+          secret: config.secret
+           //add to aud config file
+
+        }).unless({path: ['/api/auth']}));
 
 // Enable CORS from client-side
 app.use(function(req, res, next) {  
@@ -31,15 +67,19 @@ var brotherAPI = express.Router();
 
 brotherAPI.get('/getAll', function(req, res){
     
+    console.log("JWT user " + JSON.stringify(req.user));
+
     brothers = [{name: 'Sebastian Wright', location: "London", picLocation: '../../../../imgs/prophecy.jpg'},{name: 'Christopher Barrios', location: "USA", picLocation: '../../../../imgs/baldomero.jpg'},{name:'Kevin Chow', location: "Rome", picLocation: '../../../../imgs/absoluto.jpg'},
                     {name:'Josue Marrero', location: "London", picLocation: '../../../../imgs/inquiridor.jpg'},{name: 'Juan Garcia', location: "USA", picLocation: '../../../../imgs/diligencio.jpg'},{name: 'Eddy Hiraldo', location: "Mexico", picLocation: '../../../../imgs/jevi.jpg'},
                     {name: 'Jose Prado', location: "London", picLocation: '../../../../imgs/titus.jpg'},{name: 'Isaac Prado', location: "USA", picLocation: '../../../../imgs/theseus.jpg'},{name: 'Juanluis Giudicelli-Ortiz', location: "Mexico", picLocation: '../../../../imgs/leonidas.jpg'}]
-
+    //console.log("JWT " + JSON.stringify(req.user.profile));
     //returning brothers
     res.send({data: brothers});  
 });
 
-app.use('/api', brotherAPI);
+
+app.use('/private', brotherAPI);
+app.use('/api', userAPI);
 
 const server = app.listen(config.port);
 console.log("server up and jugging on port " + config.port);
