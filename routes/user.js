@@ -23,7 +23,12 @@ apiRouter.post('/auth', function (req, res) {
     return;
   }
 
-  var brother = {name: "Jose Prado", location: {latitude:28.066464399999997,longitude:-82.40067619999999}};
+  var brother = {name: "Jose Prado", location: {latitude:28.066464399999997,longitude:-82.40067619999999},  permissions: [
+  "admin",
+  "user:read",
+  "user:write"
+]};
+
 
   // We are sending the profile inside the token 
   //To-do add encode 64

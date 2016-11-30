@@ -1,43 +1,47 @@
 var express = require('express');
-var bodyParser = require("body-parser");
-var cors = require('cors');
+var bodyParser = require('body-parser');
 
-var whitelist = ['http://localhost:8000', 'chrome-extension://aicmkgpgakddgnaphhhpliifpcfhicfo','*'];
-var corsOptions = {
-  origin: function(origin, callback){
-    console.log("inside origin " + origin); 
-    var originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-    callback(originIsWhitelisted ? null : 'Bad Request', originIsWhitelisted);
-  }
-};
 
 //defining router
 var brotherAPI = express.Router();
 //adding body parser to express
 brotherAPI.use(bodyParser.json());
 
-//middleweare
-brotherAPI.use(function (req, res, next) {
-  console.log('Time:', Date.now())
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:8000");
-  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  next()
-});
-
+function entValidation(allowed, reqEnt){
+    console.log("length reqEnt: " + reqEnt.length);
+    var i;
+    for(i = 0; i < reqEnt.length; i++){
+        if(allowed === reqEnt[i])
+            return true;    
+    }
+    /*console.log("reqEnt: " + reqEnt.forEach((element, index, array) => {
+        //console.log('a[' + index + '] = ' + element);
+        if(allowed === element){
+            console.log('a[' + index + '] = ' + element);
+            return true;
+        }
+    }));*/
+    //return reqEnt.includes(allowed);
+    return false;
+}
 
 //replace with db
 var brothers = [];
 
+brotherAPI.get('/getAll', function(req, res){
 
-brotherAPI.get('/getAll',cors(corsOptions), function(req, res){
+    if(!entValidation("admin",req.user.permissions)){
+        res.status(401).send('insufficient permissions');
+    }
     
+    console.log("permissions: " +JSON.stringify(req.user.permissions));
+
     brothers = [{name: 'Sebastian Wright', location: "London", picLocation: '../../../../imgs/prophecy.jpg'},{name: 'Christopher Barrios', location: "USA", picLocation: '../../../../imgs/baldomero.jpg'},{name:'Kevin Chow', location: "Rome", picLocation: '../../../../imgs/absoluto.jpg'},
                     {name:'Josue Marrero', location: "London", picLocation: '../../../../imgs/inquiridor.jpg'},{name: 'Juan Garcia', location: "USA", picLocation: '../../../../imgs/diligencio.jpg'},{name: 'Eddy Hiraldo', location: "Mexico", picLocation: '../../../../imgs/jevi.jpg'},
                     {name: 'Jose Prado', location: "London", picLocation: '../../../../imgs/titus.jpg'},{name: 'Isaac Prado', location: "USA", picLocation: '../../../../imgs/theseus.jpg'},{name: 'Juanluis Giudicelli-Ortiz', location: "Mexico", picLocation: '../../../../imgs/leonidas.jpg'}]
-
+    
     //returning brothers
-    res.send({data: brothers});  
+    res.send({data: brothers}); 
     //error msg
     //res.status(500).send({ error: 'database is down! Please try again later.' });
 });

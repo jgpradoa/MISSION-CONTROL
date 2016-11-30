@@ -14,6 +14,8 @@ var xJwt = require('express-jwt');
 var jwt = require('jsonwebtoken');
 //userAPI
 var userAPI = require('./routes/user'); 
+//brotherAPI
+var brotherAPI = require('./routes/brother'); 
 
 
 //adding logger to express
@@ -63,21 +65,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-var brotherAPI = express.Router();
-
-brotherAPI.get('/getAll', function(req, res){
-    
-    console.log("JWT user " + JSON.stringify(req.user));
-
-    brothers = [{name: 'Sebastian Wright', location: "London", picLocation: '../../../../imgs/prophecy.jpg'},{name: 'Christopher Barrios', location: "USA", picLocation: '../../../../imgs/baldomero.jpg'},{name:'Kevin Chow', location: "Rome", picLocation: '../../../../imgs/absoluto.jpg'},
-                    {name:'Josue Marrero', location: "London", picLocation: '../../../../imgs/inquiridor.jpg'},{name: 'Juan Garcia', location: "USA", picLocation: '../../../../imgs/diligencio.jpg'},{name: 'Eddy Hiraldo', location: "Mexico", picLocation: '../../../../imgs/jevi.jpg'},
-                    {name: 'Jose Prado', location: "London", picLocation: '../../../../imgs/titus.jpg'},{name: 'Isaac Prado', location: "USA", picLocation: '../../../../imgs/theseus.jpg'},{name: 'Juanluis Giudicelli-Ortiz', location: "Mexico", picLocation: '../../../../imgs/leonidas.jpg'}]
-    //console.log("JWT " + JSON.stringify(req.user.profile));
-    //returning brothers
-    res.send({data: brothers});  
-});
-
-
 app.use('/private', brotherAPI);
 app.use('/api', userAPI);
 
@@ -85,5 +72,4 @@ const server = app.listen(config.port);
 console.log("server up and jugging on port " + config.port);
 
 //To-Do
-//add passportJS
-//add 
+//add refresh token
