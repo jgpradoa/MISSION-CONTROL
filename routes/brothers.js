@@ -1,41 +1,55 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var Brothers =  require('../models/Brothers');
 
 
 //defining router
-var brotherAPI = express.Router();
+var brothersAPI = express.Router();
 //adding body parser to express
-brotherAPI.use(bodyParser.json());
+brothersAPI.use(bodyParser.json());
 
 function entValidation(allowed, reqEnt){
     console.log("length reqEnt: " + reqEnt.length);
-    var i;
+    var i,j;
     for(i = 0; i < reqEnt.length; i++){
-        if(allowed === reqEnt[i])
-            return true;    
-    }
-    /*console.log("reqEnt: " + reqEnt.forEach((element, index, array) => {
-        //console.log('a[' + index + '] = ' + element);
-        if(allowed === element){
-            console.log('a[' + index + '] = ' + element);
-            return true;
+        for(j = 0; j < allowed.length; j++){
+            if(allowed[j] === reqEnt[i])
+                return true;    
         }
-    }));*/
-    //return reqEnt.includes(allowed);
+    }
+    
     return false;
 }
 
 //replace with db
 var brothers = [];
 
-brotherAPI.get('/getAll', function(req, res){
+brothersAPI.get('/getAll', function(req, res){
 
-    if(!entValidation("admin",req.user.permissions)){
+    /*if(!entValidation(["admin","regular"],req.user.permissions)){
         res.status(401).send('insufficient permissions');
     }
     
-    console.log("permissions: " +JSON.stringify(req.user.permissions));
+    console.log("permissions: " +JSON.stringify(req.user.permissions));*/
 
+    /*brothers = [{name: 'Sebastian Wright', location: "London", picLocation: '../../../../imgs/prophecy.jpg'},{name: 'Christopher Barrios', location: "USA", picLocation: '../../../../imgs/baldomero.jpg'},{name:'Kevin Chow', location: "Rome", picLocation: '../../../../imgs/absoluto.jpg'},
+                    {name:'Josue Marrero', location: "London", picLocation: '../../../../imgs/inquiridor.jpg'},{name: 'Juan Garcia', location: "USA", picLocation: '../../../../imgs/diligencio.jpg'},{name: 'Eddy Hiraldo', location: "Mexico", picLocation: '../../../../imgs/jevi.jpg'},
+                    {name: 'Jose Prado', location: "London", picLocation: '../../../../imgs/titus.jpg'},{name: 'Isaac Prado', location: "USA", picLocation: '../../../../imgs/theseus.jpg'},{name: 'Juanluis Giudicelli-Ortiz', location: "Mexico", picLocation: '../../../../imgs/leonidas.jpg'}]
+*/
+    this.brothers = Brothers();
+    console.log(this.brothers);
+    //returning brothers
+    res.send({data: brothers}); 
+    //error msg
+    //res.status(500).send({ error: 'database is down! Please try again later.' });
+});
+
+brothersAPI.get('/filterByBro', function(req, res){
+
+    if(!entValidation(["admin","regular"],req.user.permissions)){
+        res.status(401).send('insufficient permissions');
+    }
+    
     brothers = [{name: 'Sebastian Wright', location: "London", picLocation: '../../../../imgs/prophecy.jpg'},{name: 'Christopher Barrios', location: "USA", picLocation: '../../../../imgs/baldomero.jpg'},{name:'Kevin Chow', location: "Rome", picLocation: '../../../../imgs/absoluto.jpg'},
                     {name:'Josue Marrero', location: "London", picLocation: '../../../../imgs/inquiridor.jpg'},{name: 'Juan Garcia', location: "USA", picLocation: '../../../../imgs/diligencio.jpg'},{name: 'Eddy Hiraldo', location: "Mexico", picLocation: '../../../../imgs/jevi.jpg'},
                     {name: 'Jose Prado', location: "London", picLocation: '../../../../imgs/titus.jpg'},{name: 'Isaac Prado', location: "USA", picLocation: '../../../../imgs/theseus.jpg'},{name: 'Juanluis Giudicelli-Ortiz', location: "Mexico", picLocation: '../../../../imgs/leonidas.jpg'}]
@@ -45,6 +59,8 @@ brotherAPI.get('/getAll', function(req, res){
     //error msg
     //res.status(500).send({ error: 'database is down! Please try again later.' });
 });
+
+
 
 
 //Method:POST
@@ -148,4 +164,4 @@ brotherAPI.delete('/deleteStudentByID/:id', function(req, res){
 });*/
 
 //export this router to use in our app.js
-module.exports = brotherAPI;
+module.exports = brothersAPI;

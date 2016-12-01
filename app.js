@@ -12,10 +12,10 @@ var config = require('./config/main');
 var xJwt = require('express-jwt');
 //JWT
 var jwt = require('jsonwebtoken');
-//userAPI
-var userAPI = require('./routes/user'); 
+//authAPI
+var authAPI = require('./routes/Auth'); 
 //brotherAPI
-var brotherAPI = require('./routes/brother'); 
+var brotherAPI = require('./routes/brothers'); 
 
 
 //adding logger to express
@@ -66,7 +66,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/private', brotherAPI);
-app.use('/api', userAPI);
+app.use('/api', authAPI);
 
 const server = app.listen(config.port);
 console.log("server up and jugging on port " + config.port);
