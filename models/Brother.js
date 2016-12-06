@@ -1,23 +1,24 @@
 //encryptor 
 //const var bcrypt = require('bcrypt-nodejs');
 var Library = require('./Library');
+var equals = require('../utils').equals;
 
 var Brother = function (firstName, lastName, library, hours, picture) {
 	console.log("here 2")
-
+/*
 	this.firstName = "";
 	this.lastName = "";
 	this.library = null;
 	this.hours = "";
 	this.picture =  "../../../../imgs/user.jpg";
 	return this;
-	 //
+	 //*/
 
-  /*this.firstName = (firstName? firstName: "");
+  this.firstName = (firstName? firstName: "");
   this.lastName = (lastName? lastName : "");
   this.library = (library? library : "");
   this.hours = (hours? hours : "");
-  this.picture = (picture? picture : "../../../../imgs/user.jpg"); //*/
+  this.picture = (picture? picture : "../../../../imgs/user.jpg"); 
 };
 
 //get Library
@@ -62,7 +63,7 @@ Brother.prototype.updateHours = function(){
 
 //comparing library
 Brother.prototype.sameLibrary = function(library){
-	return library.equals(library);
+	return equals(library);
 };
 
 //set picture
@@ -73,15 +74,6 @@ Brother.prototype.updatePicture = function(){
 //get picture
 Brother.prototype.getPicture = function(picture){
 	return picture = picture;
-};
-
-
-Brother.prototype.equals = function(bro){
-	
-	if(this.firstName === bro.firstName && this.lastName === bro.lastName && this.hours === bro.hours && this.hours === bro.hours && this.picture === picture && library.equals(library))
-		return true;
-	else
-		return false;
 };
 
 

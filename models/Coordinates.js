@@ -1,4 +1,5 @@
 //Coordinates
+var equals = require('../utils').equals;
 
 //encryptor 
 //const var bcrypt = require('bcrypt-nodejs');
@@ -29,13 +30,5 @@ Coordinates.prototype.getLong = function(){
 Coordinates.prototype.updateLong = function(long){
 	this.long = long;
 };
-
-//comparing Coordinates
-Coordinates.prototype.equals = function(coordinates){
-	if(library.long == coordinates.long  && this.lat == coordinates.lat )
-		return true;
-	else
-		return false;
-}
 
 module.exports = Coordinates;

@@ -7,6 +7,7 @@ var config = require('../config/main');
 
 //user
 var User = require('../models/User');
+var Brother =  require('../models/Brother');
 
 //defining router
 var authAPI = express.Router();
@@ -26,8 +27,8 @@ authAPI.post('/auth', function (req, res) {
     return;
   }
 
-  var user = new User("Jose", "Prado", "jgpradoa@xp.com", ["admin", "user:read", "user:write"], "ML") //firstName, lastName, email, role, library
-    
+  var user = new User(new Brother('Jose','Prado', null, 2, '../../../../imgs/titus.jpg'), ["admin", "user:read", "user:write", "home:read", "admin:read", "admin:write"]) //firstName, lastName, email, role, library
+  console.log("user: " + JSON.stringify(user));
   // We are sending the profile inside the token 
   //To-do add encode 64
   var token = jwt.sign(user, config.secret, { expiresIn: 1800 }); // 60*5 minutes

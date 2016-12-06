@@ -1,4 +1,5 @@
 //library //compare coord
+var equals = require('../utils').equals;
 
 //encryptor 
 //const var bcrypt = require('bcrypt-nodejs');
@@ -32,14 +33,7 @@ Library.prototype.updateName = function(name){
 
 //comparing Location
 Library.prototype.compareLocation = function(coordinates){
-	return this.coordinates.equals(coordinates);
-}
-
-Library.prototype.equals = function(library){
-	if(library.name === this.name && this.compareLocation(Library.coordinates))
-		return true;
-	else
-		return false;
+	return equals(this,coordinates);
 }
 
 module.exports = Library;

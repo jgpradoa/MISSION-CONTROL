@@ -1,10 +1,10 @@
 //encryptor 
 //const var bcrypt = require('bcrypt-nodejs');
-
+var brother = require('./Brother');
 
 var User = function (brother, role) {
   this.brother = (brother? brother : "");
-  this.role = (role? role : "");
+  this.roles = (role? role : "");
 };
 
 User.prototype.updateBrother = function(brother) {
@@ -22,7 +22,7 @@ User.prototype.getRoles = function(){
 };
 
 User.prototype.updateRoles = function(role){
-	this.role = role;
+	this.roles = role;
 };
 
 module.exports = User;

@@ -1,6 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var Brothers =  require('../models/Brothers');
+var User =  require('../models/User');
 var ent = require('../utils').ent;
 
 //defining router
