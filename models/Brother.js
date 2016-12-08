@@ -1,18 +1,10 @@
 //encryptor 
 //const var bcrypt = require('bcrypt-nodejs');
 var Library = require('./Library');
-var equals = require('../utils').equals;
+var utils = require('../utils').equals;
 
 var Brother = function (firstName, lastName, library, hours, picture) {
 	console.log("here 2")
-/*
-	this.firstName = "";
-	this.lastName = "";
-	this.library = null;
-	this.hours = "";
-	this.picture =  "../../../../imgs/user.jpg";
-	return this;
-	 //*/
 
   this.firstName = (firstName? firstName: "");
   this.lastName = (lastName? lastName : "");
@@ -63,7 +55,7 @@ Brother.prototype.updateHours = function(){
 
 //comparing library
 Brother.prototype.sameLibrary = function(library){
-	return equals(library);
+	return utils.equals(library);
 };
 
 //set picture

@@ -16,6 +16,8 @@ var jwt = require('jsonwebtoken');
 var authAPI = require('./routes/Auth'); 
 //brotherAPI
 var brotherAPI = require('./routes/brothers'); 
+//userAPI
+var userAPI = require('./routes/User'); 
 
 
 //adding logger to express
@@ -54,7 +56,7 @@ app.use(xJwt({
           secret: config.secret
            //add to aud config file
 
-        }).unless({path: ['/api/auth']}));
+        }).unless({path: ['/api/auth/login']}));
 
 // Enable CORS from client-side
 app.use(function(req, res, next) {  
@@ -65,8 +67,11 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use('/private', brotherAPI);
-app.use('/api', authAPI);
+//unsecured
+app.use('/api/auth', authAPI);
+//secured
+app.use('/api/brothers', brotherAPI);
+app.use('/api/user', userAPI);
 
 const server = app.listen(config.port);
 console.log("server up and jugging on port " + config.port);
