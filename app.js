@@ -46,9 +46,9 @@ app.use(xJwt({
 
 //to be able to handle JWT's errors
 app.use(function (err, req, res, next) {
-  console.log(req.headers.authorization);
+  //console.log(req.headers.authorization);
   if (err.name === 'UnauthorizedError') {
-    res.status(401).send('invalid token...');
+    res.status(401).send({ error:'invalid token...'});
   }
 });
 

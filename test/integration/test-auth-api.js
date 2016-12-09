@@ -2,16 +2,16 @@ var request = require('supertest');
 var express = require('express');
 var assert = require('assert');
 //authAPI
-var authAPI = require('../routes/Auth'); 
+var authAPI = require('../../routes/Auth'); 
 //config 
-var config = require('../config/main');
+var config = require('../../config/main');
 
 //changing port for testing
 config.port = 8080;
 //turning logger off
 config.loggerON = false;
 
-var app = require('../app');
+var app = require('../../app');
 
 describe('testing login', function() {
     it('testing success login', function(done) {
@@ -76,3 +76,5 @@ describe('testing login', function() {
 		});
     });
 });	
+
+//TODO add test for couldn't find user in the db

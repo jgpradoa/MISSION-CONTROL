@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "integration": "mocha test/*",
+    "integration": "mocha test/integration/*.js",
     "allTests": "gulp testWatcher"
   },
   "keywords": [

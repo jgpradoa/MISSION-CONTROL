@@ -4,6 +4,7 @@ var brother = require('./Brother');
 var bros = [];
 
 var Brothers = function () {
+	bros = [];
 	//console.log("hi");
   bros.push(new brother('Sebastian','Wright', {coordinates: {lat: 0, long: 1}, name: 'Marston'}, 2, '../../../../imgs/prophecy.jpg')); //firstName, lastName, library, hours, Picture
   bros.push(new brother('Christopher','Barrios', {coordinates: {lat: 0, long: 1}, name: 'Marston'}, 2, '../../../../imgs/baldomero.jpg'));

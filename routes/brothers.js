@@ -14,7 +14,8 @@ var brothers = [];
 brothersAPI.get('/getAll', function(req, res){
     //console.log("perm " + JSON.stringify(req.user));
     if(!ent.entValidation(['admin','regular'],req.user.roles)){
-        res.status(401).send('insufficient permissions');
+        res.status(401).send({ error:'insufficient permissions'});
+        return;
     }
 
     this.brothers = Brothers();
@@ -26,11 +27,13 @@ brothersAPI.get('/getAll', function(req, res){
 brothersAPI.get('/filterByBro', function(req, res){
 
     if(!ent.entValidation(["admin","regular"],req.user.roles)){
-        res.status(401).send('insufficient permissions');
+        res.status(401).send({ error:'insufficient permissions'});
+        return;
     }
     var _name = req.query.name;
     if(!_name){
-        res.status(401).send("wrong request"); //change status
+        res.status(401).send({ error:"wrong request"}); //change status
+        return;
     }
 
     //console.log("filter: " + JSON.stringify(this.brothers));
@@ -52,11 +55,13 @@ brothersAPI.get('/filterByBro', function(req, res){
 brothersAPI.get('/filterByLib', function(req, res){
 
     if(!ent.entValidation(["admin","regular"],req.user.roles)){
-        res.status(401).send('insufficient permissions');
+        res.status(401).send({ error:'insufficient permissions'});
+        return;
     }
     var _name = req.query.libName;
     if(!_name){
-        res.status(401).send("wrong request"); //change status
+        res.status(401).send({ error:'wrong request'}); //change status
+        return;
     }
 
     //console.log("filter: " + JSON.stringify(this.brothers));
@@ -78,12 +83,14 @@ brothersAPI.get('/filterByLib', function(req, res){
 brothersAPI.get('/filterByAll/broName/:broName/libName/:libName', function(req, res){
 
     if(!ent.entValidation(["admin","regular"],req.user.roles)){
-        res.status(401).send('insufficient permissions');
+        res.status(401).send({ error:'insufficient permissions'});
+        return;
     }
-    var _broName = req.params.broName;
-    var _libName = req.params.libName;
+    var _broName = req.query.broName;
+    var _libName = req.query.libName;
     if(!_libName || !_broName){
-        res.status(401).send("wrong request"); //change status
+        res.status(401).send({ error:'wrong request'}); //change status
+        return;
     }
 
     //console.log("filter: " + JSON.stringify(this.brothers));
