@@ -12,7 +12,7 @@ brothersAPI.use(bodyParser.json());
 var brothers = [];
 
 brothersAPI.get('/getAll', function(req, res){
-    console.log("perm " + JSON.stringify(req.user));
+    //console.log("perm " + JSON.stringify(req.user));
     if(!ent.entValidation(['admin','regular'],req.user.roles)){
         res.status(401).send('insufficient permissions');
     }

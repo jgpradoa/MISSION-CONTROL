@@ -20,8 +20,9 @@ var brotherAPI = require('./routes/brothers');
 var userAPI = require('./routes/User'); 
 
 
-//adding logger to express
-app.use(morgan('combined'));
+//adding logger to express if config.loggerON
+if(config.loggerON)
+  app.use(morgan('combined'));
 
 //parse urlencoded bodies to JSON
 app.use(bodyParser.urlencoded({ extended: false }));  
@@ -75,6 +76,8 @@ app.use('/api/user', userAPI);
 
 const server = app.listen(config.port);
 console.log("server up and jugging on port " + config.port);
+
+module.exports = app; //for testing purposes 
 
 //To-Do
 //add refresh token

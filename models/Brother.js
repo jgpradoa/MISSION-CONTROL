@@ -4,7 +4,7 @@ var Library = require('./Library');
 var utils = require('../utils').equals;
 
 var Brother = function (firstName, lastName, library, hours, picture) {
-	console.log("here 2")
+	//console.log("here 2")
 
   this.firstName = (firstName? firstName: "");
   this.lastName = (lastName? lastName : "");
