@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon app.js",
     "integration": "mocha test/*",
-    "test": "npm run integration"
+    "allTests": "gulp testWatcher"
   },
   "keywords": [
     "API",
@@ -28,6 +28,9 @@
     "socket.io-emitter": "^1.0.0"
   },
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-shell": "^0.5.2",
+    "gulp-util": "^3.0.7",
     "mocha": "^3.2.0",
     "nodemon": "1.11.0",
     "supertest": "^2.0.1"

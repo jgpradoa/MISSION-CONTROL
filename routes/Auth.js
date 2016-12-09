@@ -18,9 +18,15 @@ authAPI.use(bodyParser.urlencoded({ extended: true }));
 //	authenticating user
 // returns a json token and the user with roles
 authAPI.post('/login', function (req, res) {
-  //TODO validate req.body.username and req.body.password
+  var _userName = req.body.username;
+  var _password = req.body.password;
+  if(!(_userName && _password)){
+    res.status(401).send({ error: 'wrong request'}); //change status
+    return;
+  }
+
   //if is invalid, return 401
-  if (!(req.body.username === 'px' && req.body.password === '123456')) {
+  if (!(_userName === 'px' && _password === '123456')) {
     res.status(401).json({ error: 'Wrong user or password'});
     return;
   }

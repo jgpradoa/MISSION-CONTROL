@@ -29,6 +29,7 @@ describe('testing login', function() {
 		    assert.ok(response.body.user.brother.hours === 2, 'hours');
 		    assert.ok(response.body.user.brother.picture === '../../../../imgs/titus.jpg', 'picture');
 		    assert(response.body.token, 'token');
+
 		    return done();
 		});
     });
@@ -43,6 +44,34 @@ describe('testing login', function() {
 		  	if(err)
 		  		console.log(err);
 		    assert.ok(response.body.error === 'Wrong user or password', 'message');
+		    return done();
+		});
+    });
+
+    it('testing invalid request -- missing username', function(done) {
+		request(app)
+		  .post('/api/auth/login')
+		  .set('Content-Type', 'application/json')
+		  .send({password: '123456a'})
+		  .expect(401)
+		  .end(function(err, response){
+		  	if(err)
+		  		console.log(err);
+		    assert.ok(response.body.error === 'wrong request', 'message');
+		    return done();
+		});
+    });
+
+    it('testing invalid request -- missing password', function(done) {
+		request(app)
+		  .post('/api/auth/login')
+		  .set('Content-Type', 'application/json')
+		  .send({username : 'px'})
+		  .expect(401)
+		  .end(function(err, response){
+		  	if(err)
+		  		console.log(err);
+		    assert.ok(response.body.error === 'wrong request', 'message');
 		    return done();
 		});
     });
