@@ -1,72 +1,70 @@
 //encryptor 
 //const var bcrypt = require('bcrypt-nodejs');
-var Library = require('./Library');
 var utils = require('../utils').equals;
 
-var Brother = function (firstName, lastName, library, hours, picture) {
-	//console.log("here 2")
+var mongoose = require('../db/mongoDB').mongoose;
+var Schema = mongoose.Schema;
 
-  this.firstName = (firstName? firstName: "");
-  this.lastName = (lastName? lastName : "");
-  this.library = (library? library : "");
-  this.hours = (hours? hours : "");
-  this.picture = (picture? picture : "../../../../imgs/user.jpg"); 
-};
+// create the brother schema 
+var brotherSchema = new Schema({
+  firstName: String,
+  lastName: String,
+  email: String,
+  hours: Number,
+  picture: String,
+  created_at: Date,
+  updated_at: Date
+});
 
-//get Library
-Brother.prototype.getLibrary = function() {
-	//add time stamp in db
-	return this.library;
-};
 
-//set library
-Brother.prototype.updateLibrary = function(newLibrary) {
-	//add time stamp in db
-	this.library = newLibrary;
-};
-
-//get last name
-Brother.prototype.getLasttName = function(){
-	return this.lastName;
-};
-
-//set last name
-Brother.prototype.updateLastName = function(lastName){
-	this.lastName = lastName;
-};
-
-//get first name
-Brother.prototype.getFirstName = function(firstName){
-	this.firstName = firstName;
-};
-//set first name
-Brother.prototype.updateFirstName = function(){
-	return this.firstName;
-};
-
-//get hours
-Brother.prototype.getHours = function(hours){
-	this.hours = hours;
-};
-//set hours
-Brother.prototype.updateHours = function(){
-	return this.hours;
-};
-
-//comparing library
-Brother.prototype.sameLibrary = function(library){
+brotherSchema.methods.sameLibrary = function(library){
 	return utils.equals(library);
 };
 
-//set picture
-Brother.prototype.updatePicture = function(){
-	return this.picture;
+brotherSchema.methods.exist = function(email, cb){
+
+	this.model('Brother').findOne({ email: email }, cb);
 };
 
-//get picture
-Brother.prototype.getPicture = function(picture){
-	return picture = picture;
+brotherSchema.methods.findOneBy = function(query, cb){
+
+	this.model('Brother').findOne(query, cb);
 };
 
+// creating actual model
+var Brother = mongoose.model('Brother', brotherSchema);
 
+//exporting model
 module.exports = Brother;
+
+
+
+/*
+Usage:
+	var brother = new Brother({ firstName: 'Jose', lastName: 'Prado', email: 'yo@lamkb.io', hours: 5 });
+
+	brother.save(function (err, brother) {
+	  if (err) throw err;
+	  console.log(brother);
+	  //return true and new brother
+	});
+	
+	//returns all
+	brother.find(function (err, brother) {
+	  if (err) throw err;
+	  console.log(brother);
+	})
+
+	brother.find({ name: 'jose' }, callback);
+
+	brother.findOneAndUpdate({'email' : 'yo@lamkb.io'}, { $set: { created_at: 'DATE_HERE' }}, { new: true }, function (err, brother) {
+	  if (err) throw err;
+	  console.log(brother);
+	  
+	});
+
+	brother.findOneAndRemove({'email' : 'yo@lamkb.io'}, function (err,offer){
+        if (err) throw err;
+		console.log(brother);
+    });
+*/

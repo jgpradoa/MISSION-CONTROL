@@ -1,29 +1,35 @@
 //encryptor 
 //const var bcrypt = require('bcrypt-nodejs');
-var brother = require('./Brother');
+var utils = require('../utils').equals;
 
-var User = function (brother, role, email) {
-  this.brother = (brother? brother : "");
-  this.roles = (role? role : "");
-  this.email = (email? email : "");
+var mongoose = require('../db/mongoDB').mongoose;
+var Schema = mongoose.Schema;
+
+// create the brother schema 
+var UserSchema = new Schema({
+  brother_id: String,
+  psw: String,
+  salt: String,
+  auth_token: String,
+  token_TS: Date
+});
+
+
+UserSchema.methods.exist = function(_id, cb){
+
+	this.model('User').findOne({ brother_id: _id }, cb);
 };
 
-User.prototype.updateBrother = function(brother) {
-	//add time stamp in db
-	this.brother = brother;
+UserSchema.methods.logIn = function(query, cb){
+
+	this.model('User').findOne(query, cb);
 };
 
-User.prototype.getBrother = function() {
-	//add time stamp in db
-	return this.brother;
-};
+// creating actual model
+var Brother = mongoose.model('User', UserSchema);
 
-User.prototype.getRoles = function(){
-	return this.roles;
-};
+//exporting model
+module.exports = Brother;
 
-User.prototype.updateRoles = function(role){
-	this.roles = role;
-};
 
-module.exports = User;
+//ToDo add roles here

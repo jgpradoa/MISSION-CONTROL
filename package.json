@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "integration": "mocha test/integration/*.js",
+    "integration": "mocha test/integration/test-auth-api.js",
     "allTests": "gulp testWatcher"
   },
   "keywords": [
@@ -23,6 +23,7 @@
     "express": "^4.14.0",
     "express-jwt": "^5.1.0",
     "jsonwebtoken": "^7.1.9",
+    "mongoose": "^4.7.2",
     "morgan": "1.5.0",
     "socket.io": "^1.6.0",
     "socket.io-emitter": "^1.0.0"

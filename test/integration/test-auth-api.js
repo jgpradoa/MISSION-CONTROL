@@ -18,16 +18,16 @@ describe('testing login', function() {
 		request(app)
 		  .post('/api/auth/login')
 		  .set('Content-Type', 'application/json')
-		  .send({username : 'px', password: '123456'})
+		  .send({email : 'yo@lamkb.io', password: 123456})
 		  .expect(200)
 		  .end(function(err, response){
 		  	if(err)
 		  		console.log(err);
-		    assert.ok(response.body.user.email === 'jgpradoa@hotmail.com', 'email');
-		    assert.ok(response.body.user.brother.firstName === 'Jose', 'first name');
-		    assert.ok(response.body.user.brother.lastName === 'Prado', 'last name');
-		    assert.ok(response.body.user.brother.hours === 2, 'hours');
-		    assert.ok(response.body.user.brother.picture === '../../../../imgs/titus.jpg', 'picture');
+		    assert.ok(response.body.brother.email === 'yo@lamkb.io', 'email');
+		    assert.ok(response.body.brother.firstName === 'Jose', 'first name');
+		    assert.ok(response.body.brother.lastName === 'Prado', 'last name');
+		    assert.ok(response.body.brother.hours === 2, 'hours');
+		    assert.ok(response.body.brother.picture === '../../../../imgs/titus.jpg', 'picture');
 		    assert(response.body.token, 'token');
 
 		    return done();
@@ -38,7 +38,7 @@ describe('testing login', function() {
 		request(app)
 		  .post('/api/auth/login')
 		  .set('Content-Type', 'application/json')
-		  .send({username : 'px', password: '123456a'})
+		  .send({email : 'yo@lamkb.io', password: 1234526})
 		  .expect(401)
 		  .end(function(err, response){
 		  	if(err)
@@ -52,7 +52,7 @@ describe('testing login', function() {
 		request(app)
 		  .post('/api/auth/login')
 		  .set('Content-Type', 'application/json')
-		  .send({password: '123456a'})
+		  .send({password: 123456})
 		  .expect(401)
 		  .end(function(err, response){
 		  	if(err)
@@ -66,7 +66,7 @@ describe('testing login', function() {
 		request(app)
 		  .post('/api/auth/login')
 		  .set('Content-Type', 'application/json')
-		  .send({username : 'px'})
+		  .send({email : 'yo@lamkb.io'})
 		  .expect(401)
 		  .end(function(err, response){
 		  	if(err)
