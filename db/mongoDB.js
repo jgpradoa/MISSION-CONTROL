@@ -19,11 +19,12 @@ exports.mongoDB = function() {
     return db;
 };
 
-exports.close = function(){
+exports.close = function(cb){
 	db.close((err) => {
       if (err) throw err;
       //return true and new brother
       console.log("db connection closed");
+      cb(err)
     });
 }
 

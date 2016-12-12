@@ -4,11 +4,11 @@ var bodyParser = require("body-parser");
 var jwt = require('../utils').jwt;
 
 //user
-var User = require('../models/User');
-var Brother =  require('../models/Brother');
+var User = require('../models/index').User;
+var Brother =  require('../models/index').Brother;
 
 //db
-var mongoDB = require('../db/mongoDB').mongoDB;
+var mongoDB = require('../db/mongoDB');
 
 //defining router
 var authAPI = express.Router();
@@ -29,37 +29,59 @@ authAPI.post('/login', function (req, res) {
   }
 
   //start db 
-  var db = new mongoDB();
+  var db = new mongoDB.mongoDB();
 
   //findOneBy
   var brother = new Brother({email: _email});
 
   brother.findOneBy({email: _email}, (err, _brother) => {
     if(err){
-      throw err;
+      mongoDB.close((_err) => {
+        if(_err)
+          throw _err;
+        if(err)
+          throw err;
+      });
     }
-
+    
     if(_brother){
       var user = new User({brother_id: _brother._id});  
       user.logIn({brother_id: _brother._id, psw: _password}, (err, user) => {
         if(err){
-          db.close();
-          throw err;
+          mongoDB.close((_err) => {
+            if(_err)
+              throw _err;
+            if(err)
+              throw err;
+          });
         }
 
         if(user){
-          db.close();
-          var token = jwt.create(_brother); // 60*5 minutes
-          res.json({ token: token, brother: _brother});
+          mongoDB.close((_err) => {
+            if(_err)
+              throw _err;
+
+            var token = jwt.create(_brother); // 60*5 minutes
+            res.json({ token: token, brother: _brother});
+          });        
         }else{
-          db.close();
-          res.status(401).json({ error: 'Wrong user or password'});   
+          mongoDB.close((_err) => {
+            if(_err)
+              throw _err;
+
+            res.status(401).json({ error: 'Wrong user or password'});
+          }); 
         }
       });
     }else{
-      db.close();
-      res.status(401).json({ error: 'Wrong user or password'});
-      return;
+      mongoDB.close((_err) => {
+        if(_err)
+          throw _err;
+
+        res.status(401).json({ error: 'Wrong user or password'});
+        return;
+      });
+      
     }
 
   });
@@ -67,7 +89,7 @@ authAPI.post('/login', function (req, res) {
 
 authAPI.post('/createUser', function(req,res){
   //start db 
-  var db = new mongoDB();
+  var db = new mongoDB.mongoDB();
 
   var _brother = req.body.brother;
   var _password = req.body.password; //has to be hashed
@@ -76,49 +98,80 @@ authAPI.post('/createUser', function(req,res){
 
   brother.exist(_brother.email, (err, _brother) => {
     if(err){
-      db.close();
-      throw err;
+      mongoDB.close((_err) => {
+        if(_err)
+          throw _err;
+        if(err)
+          throw err;
+      });
     }
     
     if(_brother){
       var user = new User({brother_id: _brother._id, psw: _password});
       user.exist(_brother._id , (err, _user) => {
         if(err){
-          db.close();
-          throw err;
+          mongoDB.close((_err) => {
+            if(_err)
+              throw _err;
+            if(err)
+              throw err;
+          });
         }
         if(_user){
-            res.status(409).send({ error:'User already exists'}); //change status
-            return;
+          mongoDB.close((_err) => {
+            if(_err)
+              throw _err;
+            
+
+          });
         }else{
           user.save((err, _user) => {
             if(err){
-              db.close();
-              throw err; //remove brother from db then throw err
+              mongoDB.close((_err) => {
+                if(_err)
+                  throw _err;
+                if(err)
+                  throw err;
+              });
             }
             
-            db.close();
-            res.json({ saved: 'true', brother: brother});
+            mongoDB.close((_err) => {
+              if(_err)
+                throw _err;
+              
+              res.json({ saved: 'true', brother: brother});
+            });
           });
         }
       }); //end of user exist
     }else{
       brother.save((err, _brother) => {
-        if (err) {
-          db.close();
-          throw err;
+        if(err){
+          mongoDB.close((_err) => {
+            if(_err)
+              throw _err;
+            if(err)
+              throw err;
+          });
         }
 
         var user = new User({brother_id: _brother._id, psw: _password});
 
         user.save((err, user) => {
           if(err){
-            db.close();
-            throw err; //remove brother from db then throw err
+            mongoDB.close((_err) => {
+              if(_err)
+                throw _err;
+              if(err)
+                throw err;
+            });
           }
           
-          db.close();
-          res.json({ saved: 'true', brother: brother});
+          mongoDB.close((_err) => {
+            if(_err)
+              throw _err;
+            res.json({ saved: 'true', brother: brother});
+          });
         });// end of user save
       });//end of brother save
     }
