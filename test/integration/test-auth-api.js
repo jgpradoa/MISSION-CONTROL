@@ -14,7 +14,6 @@ config.loggerON = false;
 
 describe('testing login', function() {
 
-	//TODO mock db
 	before(function() {
 		mongoDB.mongoDB = function(){ };
 		mongoDB.close = function(cb){
@@ -160,4 +159,19 @@ describe('testing login', function() {
     });
 });	
 
-//TODO add test for couldn't find user in the db
+describe('testing create User', function() {
+
+	before(function() {
+		mongoDB.mongoDB = function(){ };
+		mongoDB.close = function(cb){
+			cb(null);
+		}
+		//mocking Brother constructor
+		dbModels.Brother = function(fields){ };
+		//mocking User constructor
+		dbModels.User = function (fields) { };
+    });
+
+});	
+
+//TODO finish tests for create user

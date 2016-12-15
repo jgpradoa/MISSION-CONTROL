@@ -1,7 +1,5 @@
 var express = require('express');
 var bodyParser = require("body-parser");
-//JWT
-var jwt = require('../utils').jwt;
 
 //user
 var User = require('../models/index').User;
@@ -20,7 +18,8 @@ authAPI.use(bodyParser.urlencoded({ extended: true }));
 //Method:POST
 //	authenticating user
 // returns a json token and the user with roles
-authAPI.post('/login', function (req, res) {
+authAPI.post('/login',(req, res) => {
+
   var _email = req.body.email;
   var _password = req.body.password;
   if(!(_email && _password)){
@@ -31,63 +30,43 @@ authAPI.post('/login', function (req, res) {
   //start db 
   var db = new mongoDB.mongoDB();
 
-  //findOneBy
-  var brother = new Brother({email: _email});
-
-  brother.findOneBy({email: _email}, (err, _brother) => {
+  
+  var user = new User({});  
+  user.logIn(_email,_password, (err,user) => {
     if(err){
-      mongoDB.close((_err) => {
-        if(_err)
-          throw _err;
-        if(err)
-          throw err;
-      });
-    }
-    
-    if(_brother){
-      var user = new User({brother_id: _brother._id});  
-      user.logIn({brother_id: _brother._id, psw: _password}, (err, user) => {
-        if(err){
-          mongoDB.close((_err) => {
-            if(_err)
-              throw _err;
-            if(err)
-              throw err;
-          });
-        }
-
-        if(user){
-          mongoDB.close((_err) => {
-            if(_err)
-              throw _err;
-
-            var token = jwt.create(_brother); // 60*5 minutes
-            res.json({ token: token, brother: _brother});
-          });        
-        }else{
-          mongoDB.close((_err) => {
-            if(_err)
-              throw _err;
-
-            res.status(401).json({ error: 'Wrong user or password'});
-          }); 
-        }
-      });
+      res.status(401).json({ error: err});
     }else{
-      mongoDB.close((_err) => {
-        if(_err)
-          throw _err;
-
+      if(user){
+        res.json(user);
+      }else{
         res.status(401).json({ error: 'Wrong user or password'});
-        return;
-      });
-      
+      }
     }
-
   });
+
 });
 
-authAPI.post('/createUser', function(req,res){
+authAPI.get('loggedIn',(req, res) =>{
+  User.isLoggedIn(req.brother._id, req.headers.authorization.split(' ')[1], (err,loggedIn) =>{
+    if(err){
+      res.status(401).json({ error: err});
+    }else{
+      if(loggedIn){
+        res.json({loggedIn: true});
+      }else{
+        res.status(401).send({ error:'Not loggedIn'});
+      }
+    }
+  });//isLoggedIn = function(_id, _tkn, cb){
+
+});
+
+
+//TODO clean this up
+authAPI.post('/createUser',(req,res) =>{
+
+  //add middleware for role authorization
+
   //start db 
   var db = new mongoDB.mongoDB();
 
@@ -96,6 +75,7 @@ authAPI.post('/createUser', function(req,res){
 
   var brother = new Brother(_brother);
 
+  //checking if it is already a member
   brother.exist(_brother.email, (err, _brother) => {
     if(err){
       mongoDB.close((_err) => {
@@ -106,8 +86,11 @@ authAPI.post('/createUser', function(req,res){
       });
     }
     
+    //if brother found -> check if it is linked to a user
     if(_brother){
       var user = new User({brother_id: _brother._id, psw: _password});
+
+      //checking if user exists
       user.exist(_brother._id , (err, _user) => {
         if(err){
           mongoDB.close((_err) => {
@@ -117,6 +100,8 @@ authAPI.post('/createUser', function(req,res){
               throw err;
           });
         }
+
+        //if user found 
         if(_user){
           mongoDB.close((_err) => {
             if(_err)
@@ -145,7 +130,7 @@ authAPI.post('/createUser', function(req,res){
         }
       }); //end of user exist
     }else{
-      brother.save((err, _brother) => {
+      brother.createBrother(brother,_password, (err,brother) =>{
         if(err){
           mongoDB.close((_err) => {
             if(_err)
@@ -154,26 +139,13 @@ authAPI.post('/createUser', function(req,res){
               throw err;
           });
         }
-
-        var user = new User({brother_id: _brother._id, psw: _password});
-
-        user.save((err, user) => {
-          if(err){
-            mongoDB.close((_err) => {
-              if(_err)
-                throw _err;
-              if(err)
-                throw err;
-            });
-          }
           
-          mongoDB.close((_err) => {
-            if(_err)
-              throw _err;
-            res.json({ saved: 'true', brother: brother});
-          });
-        });// end of user save
-      });//end of brother save
+        mongoDB.close((_err) => {
+          if(_err)
+            throw _err;
+          res.json({ saved: 'true', brother: brother});
+        });
+      });
     }
   });
 });

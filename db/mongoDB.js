@@ -12,18 +12,14 @@ exports.mongoDB = function() {
 			console.log(err);
 			throw 'could not connect to db';
 	});
-	db.once('open', function() {
-		// we're connected!
-		console.log("connected 2");
-	});
+	
     return db;
 };
 
 exports.close = function(cb){
 	db.close((err) => {
       if (err) throw err;
-      //return true and new brother
-      console.log("db connection closed");
+      //callback
       cb(err)
     });
 }

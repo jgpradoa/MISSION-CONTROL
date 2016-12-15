@@ -1,6 +1,9 @@
 //encryptor 
 //const var bcrypt = require('bcrypt-nodejs');
 var utils = require('../utils').equals;
+//db
+var mongoDB = require('../db/mongoDB');
+var User = require('../models/index').User;
 
 var mongoose = require('../db/mongoDB').mongoose;
 var Schema = mongoose.Schema;
@@ -29,6 +32,23 @@ brotherSchema.methods.exist = function(email, cb){
 brotherSchema.methods.findOneBy = function(query, cb){
 
 	this.model('Brother').findOne(query, cb);
+};
+
+brotherSchema.methods.createBrother = function(brother, _password, cb){
+
+	brother.save((err, _brother) => {
+        if(err){
+          	mongoDB.close((_err) => {
+            	if(_err)
+              		throw _err;
+            	if(err)
+              		throw err;
+          	});
+        }
+
+        cb(err, _brother);
+  
+    });//end of brother save
 };
 
 // creating actual model
