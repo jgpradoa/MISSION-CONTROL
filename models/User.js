@@ -30,51 +30,46 @@ UserSchema.methods.logIn = function(email, psw, cb){
 	//start db 
   	var db = new mongoDB.mongoDB();
 	
-	//creating brother to 
-	var brother = new Brother({email: email});
 	//creating brother cursor
-	var broCursor = Brother.find({ email: email }).cursor();
-	//flag to check if we have multiple users
-	var searchedFinished = false;
-
-	//calling this when we find a brother with that e-mail
-	broCursor.on('data', function(bro) {
-		//return error if we have multiple bros with the same e-mail
-		if(searchedFinished){
-			console.log('block accounts');
+	Brother.findOne({ email: email }, function(error, bro) {
+		if(!bro){
+			//email didn't match
+	  		mongoDB.close((_err) => {
+		    	//add logger
+		    	console.log(_err);
+		    	cb('Wrong user or password',null);
+			});
 			return;
-		}
-
+	  	}
 	  //finding brother in user's table 
 	  mongoDB.mongoose.model('User', UserSchema).findOne({ brother_id: bro._id }, (err, user) => {
+	  	
 	  	//checking if psw is correct
 	  	if(user.psw === psw){
-	  		//setting flag true
-	  		searchedFinished = true;
 	  		//create JWT
 	  		var jwt = new JWT({brother_id: user.brother_id});
 	  		//creating and storing token in JWT
 	  		jwt.logIn(bro,function(err) {
-		    	//closing db
-			    mongoDB.close((_err) => {
+	  			//returning error, token and brother
+				mongoDB.close((_err) => {
 			    	//add logger
-			    	if(_err)
-			    		cb(_err,{ token: jwt.auth_token, brother: bro});
-			    	else	
-		            	cb(err,{ token: jwt.auth_token, brother: bro});
-		        });
+			    	console.log(_err);
+			    	cb(err,{ token: jwt.auth_token, brother: bro});
+				});
 			});
 	  	}else{
+	  		//psws didn't match
 	  		mongoDB.close((_err) => {
-	  			if(_err)
-	            	cb(_err,null);
-	            else
-	            	cb({msg: 'Wrong user or password'},null);
-	        });
+		    	//add logger
+		    	console.log(_err);
+		    	cb('Wrong user or password',null);
+			});
 	  	}
 
-	  });
-	});
+	  }); // end of user 
+	});//en of on data 
+
+
 };
 
 //

@@ -23,22 +23,18 @@ authAPI.post('/login',(req, res) => {
   var _email = req.body.email;
   var _password = req.body.password;
   if(!(_email && _password)){
-    res.status(409).send({ error: 'wrong request'});
+    res.status(400).send({ error: 'wrong request'});
     return;
   }
   
   //creating user obj to check credentials
   var user = new User({});  
   user.logIn(_email,_password, (err,user) => {
-    if(err){
+    if(err){ //including not found
       res.status(401).json({ error: err});
     }else{
-      if(user){
         //user has token and user id
         res.json(user);
-      }else{
-        res.status(401).json({ error: 'Wrong user or password'});
-      }
     }
   });
 
