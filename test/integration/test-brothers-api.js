@@ -187,6 +187,24 @@ describe('testing brothers', function() {
 		    return done();
 		});
     });
+
+    //filterByLib
+
+    it('testing filterByLib', function(done) {
+    	request(app)
+		  .get('/api/brothers/filterByBro')
+		  .set('Content-Type', 'application/json')
+		  .set('Authorization', 'Bearer '+token+'a')
+		  .expect(401)
+		  .end(function(err, response){
+		  	if(err)
+		  		console.log(err);
+		    console.log(response.body.error);
+		    assert.ok(response.body.error === 'invalid token...', 'message');
+
+		    return done();
+		});
+    });
 });	
 
 //TODO 

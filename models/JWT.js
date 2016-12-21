@@ -12,10 +12,13 @@ var JWTSchema = new Schema({
   token_TS: Date
 });
 
-JWTSchema.methods.create = function(brother){
+JWTSchema.methods.logIn = function(brother, cb){
 	this.auth_token = utils.jwt.create(brother); // 60*5 minutes
 	this.token_TS = Date.now();
-	return this.auth_token;
+	this.brother_id = brother._id;
+	this.save(function(err) {
+    	cb(err);
+  	});
 };
 
 JWTSchema.methods.exist = function(cb){
@@ -25,41 +28,9 @@ JWTSchema.methods.exist = function(cb){
 
 JWTSchema.methods.logOut = function(_id, cb){
 	
-	/*var brother = new Brother({email: email});
-	var broCursor = Brother.find({ email: email }).cursor();
-	var searchedFinished = false;
-	broCursor.on('data', function(bro) {
-	  if(searchedFinished){
-	  	console.log('block accounts');
-	  	return;
-	  }
-	  //cursing through Brothers --change to find 
-	  mongoDB.mongoose.model('User', UserSchema).findOne({ brother_id: bro._id }, (err, user) => {
-	  	console.log('user: ' + user);
-	  	if(user.psw === pasw){
-	  		searchedFinished = true;
-	  		var token = utils.jwt.create(brother); // 60*5 minutes
-	  		user.auth_token = token;
-
-			// save the user
-		  	\mongoDB.close((_err) => {
-	  			console.log(bro);
-	            cb(_err,{ token: token, brother: bro});
-	        });
-	  		
-	  	}else{
-	  		mongoDB.close((_err) => {
-	  			console.log(bro);
-	            cb(_err,null);
-	        });
-	  	}
-
-	  });
+	this.model('JWT').findOneAndRemove({ brother_id: _id }, function(err) {
+	  	cb(err);
 	});
-
-	broCursor.on('end', function() {
-		console.log('called end');
-	});*/
 };
 
 // creating actual model

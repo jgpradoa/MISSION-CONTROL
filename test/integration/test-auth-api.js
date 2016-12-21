@@ -23,6 +23,7 @@ describe('testing login', function() {
 		dbModels.Brother = function(fields){ };
 		//mocking User constructor
 		dbModels.User = function (fields) { };
+		dbModels.JWT = function (fields) { };
     });
 
     it('testing success login', function(done) {

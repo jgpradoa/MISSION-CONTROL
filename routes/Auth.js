@@ -19,24 +19,22 @@ authAPI.use(bodyParser.urlencoded({ extended: true }));
 //	authenticating user
 // returns a json token and the user with roles
 authAPI.post('/login',(req, res) => {
-
+  //checking param
   var _email = req.body.email;
   var _password = req.body.password;
   if(!(_email && _password)){
-    res.status(409).send({ error: 'wrong request'}); //change status
+    res.status(409).send({ error: 'wrong request'});
     return;
   }
-
-  //start db 
-  var db = new mongoDB.mongoDB();
-
   
+  //creating user obj to check credentials
   var user = new User({});  
   user.logIn(_email,_password, (err,user) => {
     if(err){
       res.status(401).json({ error: err});
     }else{
       if(user){
+        //user has token and user id
         res.json(user);
       }else{
         res.status(401).json({ error: 'Wrong user or password'});
@@ -46,7 +44,7 @@ authAPI.post('/login',(req, res) => {
 
 });
 
-authAPI.get('loggedIn',(req, res) =>{
+authAPI.get('/loggedIn',(req, res) =>{
   User.isLoggedIn(req.brother._id, req.headers.authorization.split(' ')[1], (err,loggedIn) =>{
     if(err){
       res.status(401).json({ error: err});
@@ -61,6 +59,21 @@ authAPI.get('loggedIn',(req, res) =>{
 
 });
 
+//logOut
+authAPI.post('/logout',(req, res) =>{ 
+  console.log('brother: ' + req.brother._id);
+  var _id = req.body.brother_id;
+  if(!_id)
+    res.status(409).send({ error: 'wrong request'}); //change status
+
+  User.logOut(_id, (err) => {
+    if(err)
+      res.status(401).json({ error: err});
+
+    res.json({loggedOut: true});
+  });
+
+});
 
 //TODO clean this up
 authAPI.post('/createUser',(req,res) =>{
